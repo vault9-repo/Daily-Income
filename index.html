@@ -314,7 +314,6 @@ function spinnerAdd(el, id, amount){
     }, 500);
 }
 
-/* ✅ UPDATED: ONLY SHOW ⏳ WHEN ANY AMOUNT IS SPENT */
 function getStatus(id, base){
     let remaining = parseFloat(localStorage.getItem(id));
     let box = document.getElementById(id);
@@ -360,7 +359,7 @@ function restoreChecks(){
     });
 }
 
-/* ICON LOGIC UPDATED HERE ONLY */
+/* ONLY CHANGE: WEEKEND LABEL ALIGNMENT FIX */
 function updateLabel(id, baseAmount){
 
     let remaining = parseFloat(localStorage.getItem(id));
@@ -381,11 +380,14 @@ function updateLabel(id, baseAmount){
     if(status==="wait"){ icon="⏳"; cls="status-wait"; }
     if(status==="done"){ icon="✅"; cls="status-done"; }
 
+    /* ✅ ALIGNMENT FIX (first letters aligned) */
     label.innerHTML = `
-        <span class="${cls}">${icon} ${name}</span>
+        <span class="${cls}" style="display:inline-block; min-width:160px;">
+            ${icon} ${name}
+        </span>
         • KSh ${baseAmount}
         • Spent ${spent}
-        • Remaining ${remaining}
+        • Rem ${remaining}
     `;
 }
 
@@ -418,7 +420,7 @@ function processWeekendItem(id, amount){
     if(isNaN(remaining)) remaining = amount;
 
     document.getElementById("modalInfo").innerText =
-        "Remaining: KSh " + remaining;
+        "Rem: KSh " + remaining;
 
     document.getElementById("deductModal").style.display = "flex";
 }
@@ -453,7 +455,7 @@ function applyDeduction(){
     updateBank();
     closeModal();
 
-    alert(`Deducted KSh ${amount} | Remaining: KSh ${newRemaining}`);
+    alert(`Deducted KSh ${amount} | Rem: KSh ${newRemaining}`);
 }
 
 function closeModal(){
