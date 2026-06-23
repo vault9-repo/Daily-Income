@@ -138,7 +138,7 @@ button{
 .status-wait{ color:#d97706; font-weight:bold; }
 .status-done{ color:#16a34a; font-weight:bold; }
 
-/* ✅ SPINNER (ADDED ONLY) */
+/* SPINNER */
 .spinner{
     display:inline-block;
     width:14px;
@@ -281,13 +281,19 @@ const baseAmounts = {
 };
 
 function spinnerAdd(el, id, amount){
-    // show spinner temporarily
     const original = el.innerHTML;
     el.innerHTML = `<span class="spinner"></span> Adding`;
 
     setTimeout(()=>{
         el.innerHTML = original;
-        document.getElementById(id).checked = true;
+
+        const box = document.getElementById(id);
+        box.checked = true;
+
+        // ✅ FIX: persist state immediately
+        saveCheck(id, true);
+        box.dispatchEvent(new Event("change"));
+
         processWeekendItem(id, amount);
     }, 500);
 }
@@ -423,7 +429,6 @@ function applyDeduction(){
     localStorage.setItem(currentItem, newRemaining);
 
     updateLabel(currentItem, baseAmounts[currentItem]);
-
     updateBank();
     closeModal();
 
