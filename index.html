@@ -77,6 +77,23 @@ input[type="checkbox"]{
     font-weight:bold;
 }
 
+/* ENLARGED EXTRA EARNINGS INPUT */
+#extraInput{
+    width:100%;
+    padding:16px;
+    margin-top:12px;
+    font-size:20px;
+    border-radius:10px;
+    border:2px solid #cbd5e1;
+    outline:none;
+    transition:0.2s;
+}
+
+#extraInput:focus{
+    border-color:#007bff;
+    box-shadow:0 0 8px rgba(0,123,255,0.3);
+}
+
 button{
     width:100%;
     margin-top:10px;
@@ -161,7 +178,6 @@ button{
     font-size:18px;
     color:#007bff;
 }
-
 </style>
 </head>
 
@@ -179,6 +195,7 @@ button{
 
 <div class="summary">
     <p>Extras Bank: KSh <span id="extrasBank">0</span></p>
+
     <input type="number" id="extraInput" placeholder="Add Extra Earnings">
     <button onclick="addExtra()">Add Extra</button>
 </div>
@@ -290,7 +307,6 @@ function spinnerAdd(el, id, amount){
         const box = document.getElementById(id);
         box.checked = true;
 
-        // ✅ FIX: persist state immediately
         saveCheck(id, true);
         box.dispatchEvent(new Event("change"));
 
@@ -298,6 +314,7 @@ function spinnerAdd(el, id, amount){
     }, 500);
 }
 
+/* ✅ UPDATED: ONLY SHOW ⏳ WHEN ANY AMOUNT IS SPENT */
 function getStatus(id, base){
     let remaining = parseFloat(localStorage.getItem(id));
     let box = document.getElementById(id);
@@ -309,7 +326,10 @@ function getStatus(id, base){
     }
 
     if(remaining <= 0) return "done";
-    if(box.checked) return "wait";
+
+    let spent = base - remaining;
+
+    if(spent > 0) return "wait";
 
     return "not";
 }
@@ -340,6 +360,7 @@ function restoreChecks(){
     });
 }
 
+/* ICON LOGIC UPDATED HERE ONLY */
 function updateLabel(id, baseAmount){
 
     let remaining = parseFloat(localStorage.getItem(id));
