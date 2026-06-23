@@ -196,6 +196,9 @@ button{
 <div class="summary">
     <p>Extras Bank: KSh <span id="extrasBank">0</span></p>
 
+    <p>Saturday Remaining Total: KSh <span id="satTotal">0</span></p>
+    <p>Sunday Remaining Total: KSh <span id="sunTotal">0</span></p>
+
     <input type="number" id="extraInput" placeholder="Add Extra Earnings">
     <button onclick="addExtra()">Add Extra</button>
 </div>
@@ -359,6 +362,22 @@ function restoreChecks(){
     });
 }
 
+function updateWeekendTotals(){
+    let satTotal = 0;
+    let sunTotal = 0;
+
+    Object.keys(baseAmounts).forEach(id=>{
+        let remaining = parseFloat(localStorage.getItem(id));
+        if(isNaN(remaining)) remaining = baseAmounts[id];
+
+        if(id.startsWith("sat")) satTotal += remaining;
+        if(id.startsWith("sun")) sunTotal += remaining;
+    });
+
+    document.getElementById("satTotal").textContent = satTotal;
+    document.getElementById("sunTotal").textContent = sunTotal;
+}
+
 /* ONLY CHANGE: WEEKEND LABEL ALIGNMENT FIX */
 function updateLabel(id, baseAmount){
 
@@ -380,7 +399,6 @@ function updateLabel(id, baseAmount){
     if(status==="wait"){ icon="⏳"; cls="status-wait"; }
     if(status==="done"){ icon="✅"; cls="status-done"; }
 
-    /* ✅ ALIGNMENT FIX (first letters aligned) */
     label.innerHTML = `
         <span class="${cls}" style="display:inline-block; min-width:160px;">
             ${icon} ${name}
@@ -407,6 +425,8 @@ function addExtra(){
 function updateBank(){
     document.getElementById("extrasBank").textContent =
         localStorage.getItem("extrasBank")||0;
+
+    updateWeekendTotals();
 }
 
 function processWeekendItem(id, amount){
@@ -453,6 +473,7 @@ function applyDeduction(){
 
     updateLabel(currentItem, baseAmounts[currentItem]);
     updateBank();
+    updateWeekendTotals();
     closeModal();
 
     alert(`Deducted KSh ${amount} | Rem: KSh ${newRemaining}`);
@@ -476,6 +497,8 @@ window.onload=function(){
     Object.keys(baseAmounts).forEach(id=>{
         updateLabel(id, baseAmounts[id]);
     });
+
+    updateWeekendTotals();
 };
 
 </script>
